@@ -53,4 +53,21 @@ void list::view() {
     std::cout << std::endl;
 }
 
-void list::insertionSortVisualize (){}
+void list::insertionSortVisualizeConsole() {
+    int temp;
+    int i;
+    int j;
+    int* p = this->contents;
+
+    for (int i = 1; i < this->length; i++) {
+        temp = *(p + i);
+        j = i - 1;
+        while (j >= 0 && *(p + j) > temp) {
+            *(p + j + 1) = *(p + j);
+            j -= 1;
+        }
+        *(p + j + 1) = temp;
+    }
+
+
+}

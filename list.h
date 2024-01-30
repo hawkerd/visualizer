@@ -18,6 +18,7 @@ class list {
         int min;
         int max;
         int length;
+
     public:
         list();
         list(int length, int maxVal, int minVal);
@@ -26,7 +27,7 @@ class list {
         void reset();
         void view();
 
-        void insertionSortVisualize();
+        void insertionSortVisualizeConsole();
 };
 
 
