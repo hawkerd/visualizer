@@ -59,15 +59,26 @@ void list::insertionSortVisualizeConsole() {
     int j;
     int* p = this->contents;
 
+    std::cout << "Starting insertion sort on the list:\n";
+    std::cout << "Element 0 is already in place\n";
+    this->view();
+
     for (int i = 1; i < this->length; i++) {
+        std::cout << "Placing element: " << i << std::endl;
         temp = *(p + i);
         j = i - 1;
+        this->view();
         while (j >= 0 && *(p + j) > temp) {
             *(p + j + 1) = *(p + j);
             j -= 1;
+            this->view();
         }
         *(p + j + 1) = temp;
+        this->view();
+        std::cout << "Placed element: " << i << std::endl;
+        std::cout << "The first " << i+1 << " element(s) are sorted\n";
+
     }
 
-
+    std::cout << "Done!";
 }
