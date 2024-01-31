@@ -82,3 +82,66 @@ void list::insertionSortVisualizeConsole() {
 
     std::cout << "Done!";
 }
+
+void list::visualize() {
+    //initializes glfw
+    if (!glfwInit()) {
+        std::cerr << "Failed to initialize GLFW" << std::endl;
+        return;
+    }
+
+    //creates a windowed mode window and its opengl context
+    GLFWwindow* window = glfwCreateWindow(1600,900,"Visualizer",NULL,NULL);
+    if (!window) {
+        std::cerr << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return;
+    }
+
+    //make the window's context current
+    glfwMakeContextCurrent(window);
+
+    //initialize glew
+    glewExperimental = GL_TRUE;
+    if (glewInit() != GLEW_OK) {
+        std::cerr << "Failed to initialize GLEW" << std::endl;
+        return;
+    }
+
+
+    //loop until the window is closed
+    while (!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT);
+        //render here!
+
+        drawList();
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    //close the window
+    glfwTerminate();
+}
+
+void list::drawBar(float x, float y, float width, float height) {
+    glBegin(GL_QUADS);
+    glVertex2f(x, y); //bottom left vertex
+    glVertex2f(x + width, y); //bottom right
+    glVertex2f(x + width, y + height); //top right
+    glVertex2f(x, y + height); //top left
+    glEnd();
+}
+
+void list::drawList() {
+    float barHeight;
+    float barWidth;
+    float xpos;
+
+    barWidth = 2.0 / this->length;
+    for (int i = 0; i < this->length; i++) {
+        barHeight = (*(this->contents + i) / static_cast<float>(this->max)) * 2;
+        xpos = (i * barWidth) - 1;
+        this->drawBar(xpos, -1, barWidth, barHeight);
+    }
+}

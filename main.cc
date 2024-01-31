@@ -1,6 +1,7 @@
 #include "list.h"
-#include "gl.h"
 
 int main() {
-    test();
+    list x(25,0,10);
+    x.visualize();
+
 }

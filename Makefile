@@ -11,7 +11,7 @@ LDFLAGS = -L/opt/local/lib
 LDLIBS = -lglfw -lglew -framework OpenGL
 
 # Source files
-SRCS = main.cc list.cc gl.cc
+SRCS = main.cc list.cc
 
 # Object files
 OBJS = $(SRCS:.cc=.o)
