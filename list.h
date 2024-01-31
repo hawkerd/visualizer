@@ -47,6 +47,8 @@ class list {
 
         //algorithm visualization
         void insertionSort();
+
+        //VARIABLES:
 };
 
 
