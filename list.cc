@@ -30,7 +30,8 @@ list::~list() {
 //PUBLIC:
 //algorithm visualization functions
 void list::insertionSort() {
-    this->visualize();
+    initializeOpenGL();
+    visualizeInsertionSort();
 }
 
 //PRIVATE:
@@ -58,7 +59,7 @@ void list::reset() {
 
 //visualization helper functions
 //TODO:make visualize call the proper sorting algorithm visualizer by taking in a parameter that determines what algorithm is called
-void list::visualize() {
+void list::initializeOpenGL() {
     //initializes glfw
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -66,7 +67,7 @@ void list::visualize() {
     }
 
     //creates a windowed mode window and its opengl context
-    GLFWwindow* window = glfwCreateWindow(720,400,"Visualizer",NULL,NULL);
+    window = glfwCreateWindow(720,400,"Visualizer",NULL,NULL);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -83,13 +84,8 @@ void list::visualize() {
         return;
     }
 
-
-    //render something here!
-    visualizeInsertionSort(window);
-    reset();
-
     //close the window
-    glfwTerminate();
+    //glfwTerminate();
 }
 
 void list::drawBar(float x, float y, float width, float height) {
@@ -112,7 +108,7 @@ void list::drawList() {
     }
 }
 
-void list::visualizeInsertionSort(GLFWwindow* window) {
+void list::visualizeInsertionSort() {
     //variables for the algorithm
     bool isSorting = false;
     int i = 1;
@@ -123,8 +119,7 @@ void list::visualizeInsertionSort(GLFWwindow* window) {
     double lastUpdateTime = glfwGetTime();
     double currentTime;
     double delay = 0.1;
-
-
+    
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -160,4 +155,5 @@ void list::visualizeInsertionSort(GLFWwindow* window) {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    glfwTerminate();
 }
