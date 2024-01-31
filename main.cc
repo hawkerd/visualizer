@@ -2,6 +2,6 @@
 
 int main() {
     list x(25,0,10);
-    x.visualize();
+    x.insertionSort();
 
 }

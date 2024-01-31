@@ -10,36 +10,40 @@
 
 class list {
     private:
+        //FUNCTIONS:
+        
         //functions involved in visualize()
-        void drawBar(float x, float y, float width, float height);
-        void drawList();
-        
-        //list
-        int* contents;
-        
+        void drawBar(float x, float y, float width, float height); //draws a bar
+        void drawList(); //draws the list in its current state
+        void reset();
+        void visualizeInsertionSort(GLFWwindow* window);
+        void visualize();
+
         //function to generate random number, used in the constructor
-        static int random(int lower, int upper);
+        static int random(int min, int max);
         
-        //variables that characterize the list
-        static const int lowerDefault = 0;
-        static const int upperDefault = 35;
-        static const int lengthDefault = 20;;
+        
+        //VARIABLES:
+                
+        //variables that charactarize the list
+        int* contents;
         int min;
         int max;
-        int length;
+        int len;
+        static const int minDef = 0;
+        static const int maxDef = 35;
+        static const int lenDef = 20;;
 
     public:
+        //FUNCTIONS:
+
         //constructors and destructor
         list();
-        list(int length, int maxVal, int minVal);
+        list(int len, int min, int max);
         ~list();
 
-        void reset();
-        void view();
-
-        void insertionSortVisualizeConsole();
-
-        void visualize();
+        //algorithm visualization
+        void insertionSort();
 };
 
 

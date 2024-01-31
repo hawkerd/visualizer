@@ -1,88 +1,63 @@
 #include "list.h"
 
-int list::random(int lower, int upper) {
-    //returns a random number
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distrib(lower,upper);
-    int randomValue = distrib(gen);
-    return randomValue;
-}
-
+//constructors and destructor
 list::list() {
     //initializes list to default
     
-    this->min = lowerDefault;
-    this->max = upperDefault;
-    this->length = lengthDefault;
+    this->min = minDef;
+    this->max = maxDef;
+    this->len = lenDef;
     this->contents = nullptr;
-    
-    this->reset();
+
+    reset();
 }
 
-list::list(int length, int minVal, int maxVal) {
+list::list(int len, int min, int max) {
     //initializes array according to given parameters
 
     this->contents = nullptr;
-    this->length = length;
-    this->min = minVal;
-    this->max = maxVal;
+    this->len = len;
+    this->min = min;
+    this->max = max;
 
-    this->reset();
+    reset();
 }
 
 list::~list() {
     delete[] this->contents;
 }
 
+//PUBLIC:
+//algorithm visualization functions
+void list::insertionSort() {
+    this->visualize();
+}
+
+//PRIVATE:
+//utility functions
+int list::random(int min, int max) {
+    //returns a random number
+    //static funtion
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(min,max);
+    int randomValue = distrib(gen);
+    return randomValue;
+}
+
 void list::reset() {
     //regenerates the contents of the array
-    delete[] this->contents;
-    this->contents = new int[this->length];
+    delete[] contents;
+    contents = new int[len];
 
-    for (int i = 0; i < length; i++) {
-        *(this->contents + i) = random(this->min,this->max);
+    for (int i = 0; i < len; i++) {
+        *(contents + i) = random(min,max);
     }
 }
 
-void list::view() {
-    int i;
-    for (int i = 0; i < this->length; i++) {
-        std::cout << *(this->contents + i) << ' ';
-    }
-    std::cout << std::endl;
-}
 
-void list::insertionSortVisualizeConsole() {
-    int temp;
-    int i;
-    int j;
-    int* p = this->contents;
-
-    std::cout << "Starting insertion sort on the list:\n";
-    std::cout << "Element 0 is already in place\n";
-    this->view();
-
-    for (int i = 1; i < this->length; i++) {
-        std::cout << "Placing element: " << i << std::endl;
-        temp = *(p + i);
-        j = i - 1;
-        this->view();
-        while (j >= 0 && *(p + j) > temp) {
-            *(p + j + 1) = *(p + j);
-            j -= 1;
-            this->view();
-        }
-        *(p + j + 1) = temp;
-        this->view();
-        std::cout << "Placed element: " << i << std::endl;
-        std::cout << "The first " << i+1 << " element(s) are sorted\n";
-
-    }
-
-    std::cout << "Done!";
-}
-
+//visualization helper functions
+//TODO:make visualize call the proper sorting algorithm visualizer by taking in a parameter that determines what algorithm is called
 void list::visualize() {
     //initializes glfw
     if (!glfwInit()) {
@@ -91,7 +66,7 @@ void list::visualize() {
     }
 
     //creates a windowed mode window and its opengl context
-    GLFWwindow* window = glfwCreateWindow(1600,900,"Visualizer",NULL,NULL);
+    GLFWwindow* window = glfwCreateWindow(720,400,"Visualizer",NULL,NULL);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -109,16 +84,9 @@ void list::visualize() {
     }
 
 
-    //loop until the window is closed
-    while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
-        //render here!
-
-        drawList();
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+    //render something here!
+    visualizeInsertionSort(window);
+    reset();
 
     //close the window
     glfwTerminate();
@@ -136,12 +104,60 @@ void list::drawBar(float x, float y, float width, float height) {
 void list::drawList() {
     float barHeight;
     float barWidth;
-    float xpos;
 
-    barWidth = 2.0 / this->length;
-    for (int i = 0; i < this->length; i++) {
-        barHeight = (*(this->contents + i) / static_cast<float>(this->max)) * 2;
-        xpos = (i * barWidth) - 1;
-        this->drawBar(xpos, -1, barWidth, barHeight);
+    barWidth = 2.0 / len;
+    for (int i = 0; i < len; i++) {
+        barHeight = (*(contents + i) / static_cast<float>(max)) * 2;
+        drawBar((-1 + i * barWidth), -1, barWidth, barHeight);
+    }
+}
+
+void list::visualizeInsertionSort(GLFWwindow* window) {
+    //variables for the algorithm
+    bool isSorting = false;
+    int i = 1;
+    int j;
+    int temp;
+    
+    //variables for delay
+    double lastUpdateTime = glfwGetTime();
+    double currentTime;
+    double delay = 0.1;
+
+
+    while (!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        drawList();
+
+        currentTime = glfwGetTime();
+        if (currentTime - lastUpdateTime > delay) {
+            lastUpdateTime = currentTime;
+            
+            //start or continue one iteration of the outer loop
+            if (!isSorting && i < len) {
+                temp = contents[i];
+                j = i - 1;
+                isSorting = true;
+            }
+
+            //perform one step of insertion sort
+            if (isSorting) {
+                if (j >=0 && contents[j] > temp) {
+                    contents[j+1] = contents[j];
+                    j--;
+                    drawList();
+                } else {
+                    contents[j+1] = temp;
+                    drawList();
+                    i++;
+                    isSorting = false;
+                }
+            }
+        }
+
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 }
