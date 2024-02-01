@@ -1,8 +1,26 @@
 #include "list.h"
 
 int main() {
-    list x(50,0,100);
-    x.insertionSort();
-    x.selectionSort();
+    int input = 1;
 
+    list myList;
+    
+    std::cout << "Welcome! This program offers visualization for different algorithms\n";
+    std::cout << "Input a number corresponding to an algorithm, or 0 to quit";
+    
+    while (input != 0) {
+        std::cout << "-------Menu-------\n";
+        std::cout << "0. Quit\n";
+        std::cout << "1. Insertion Sort\n";
+        std::cout << "2. Selection Sort\n";
+        std::cout << "------------------\n";
+
+        std:: cin >> input;
+
+        if(input == 0 || input < 0 || input > 2) {
+            break;
+        } else {
+            myList.visualize(input);
+        }
+    }
 }

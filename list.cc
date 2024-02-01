@@ -29,19 +29,6 @@ list::~list() {
 
 //PUBLIC:
 //algorithm visualization functions
-void list::insertionSort() {
-    initializeOpenGL();
-    visualizeInsertionSort();
-    glfwTerminate();
-    reset();
-}
-
-void list::selectionSort() {
-    initializeOpenGL();
-    visualizeSelectionSort();
-    glfwTerminate();
-    reset();
-}
 
 //PRIVATE:
 //utility functions
@@ -63,6 +50,17 @@ void list::reset() {
     for (int i = 0; i < len; i++) {
         *(contents + i) = random(min,max);
     }
+}
+
+void list::visualize(int input) {
+    initializeOpenGL();
+    if (input == 1) {
+        visualizeInsertionSort();
+    } else if (input == 2) {
+        visualizeSelectionSort();
+    }
+    glfwTerminate();
+    reset();
 }
 
 

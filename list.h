@@ -33,24 +33,19 @@ class list {
         int len;
         static const int minDef = 0;
         static const int maxDef = 35;
-        static const int lenDef = 20;;
+        static const int lenDef = 40;
 
         //variables necessary for rendering
         GLFWwindow* window;
 
     public:
-        //FUNCTIONS:
-
         //constructors and destructor
         list();
         list(int len, int min, int max);
         ~list();
 
         //algorithm visualization
-        void insertionSort();
-        void selectionSort();
-
-        //VARIABLES:
+        void visualize(int input);
 };
 
 
