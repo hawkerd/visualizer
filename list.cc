@@ -58,6 +58,10 @@ void list::visualize(int input) {
         visualizeInsertionSort();
     } else if (input == 2) {
         visualizeSelectionSort();
+    } else if (input == 3) {
+        visualizeBubbleSort();
+    } else {
+
     }
     glfwTerminate();
     reset();
@@ -205,3 +209,50 @@ void list::visualizeSelectionSort() {
     }
 }
 
+void list::visualizeBubbleSort() {
+    int i = 0;
+    int j;
+    int temp;
+    bool innerLoop = false;
+    bool swapped;
+
+    while (!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        //keeps rendering the completed list
+        if (i >= len - 1) {
+            drawList();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+            continue;
+        }
+
+        drawList();
+
+        if (!innerLoop) { //in the outer loop
+            j = 0;
+            innerLoop = true;
+            swapped = false;
+        } else { //in the inner loop
+            if (j < len - i - 1) { //j still iterating
+                if (contents[j] > contents[j+1]) {
+                    int temp = contents[j];
+                    contents[j] = contents[j+1];
+                    contents[j+1] = temp;
+                    swapped = true;
+                }
+                j++;
+            } else { //j done iterating, increase i and check swapped
+                i++;
+                innerLoop = false;
+                if (swapped == false) {
+                    i = len;
+                }
+
+            }
+        }
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+}

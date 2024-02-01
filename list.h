@@ -15,13 +15,14 @@ class list {
         //functions involved in algorithm visualization
         void drawBar(float x, float y, float width, float height); //draws a bar
         void drawList(); //draws the list in its current state
-        void reset();
         void visualizeInsertionSort();
         void visualizeSelectionSort();
+        void visualizeBubbleSort();
         void initializeOpenGL();
 
-        //function to generate random number, used in the constructor
+        //utility functions
         static int random(int min, int max);
+        void reset();
         
         
         //VARIABLES:
