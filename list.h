@@ -17,6 +17,7 @@ class list {
         void drawList(); //draws the list in its current state
         void reset();
         void visualizeInsertionSort();
+        void visualizeSelectionSort();
         void initializeOpenGL();
 
         //function to generate random number, used in the constructor
@@ -47,6 +48,7 @@ class list {
 
         //algorithm visualization
         void insertionSort();
+        void selectionSort();
 
         //VARIABLES:
 };

@@ -32,6 +32,15 @@ list::~list() {
 void list::insertionSort() {
     initializeOpenGL();
     visualizeInsertionSort();
+    glfwTerminate();
+    reset();
+}
+
+void list::selectionSort() {
+    initializeOpenGL();
+    visualizeSelectionSort();
+    glfwTerminate();
+    reset();
 }
 
 //PRIVATE:
@@ -67,7 +76,7 @@ void list::initializeOpenGL() {
     }
 
     //creates a windowed mode window and its opengl context
-    window = glfwCreateWindow(720,400,"Visualizer",NULL,NULL);
+    window = glfwCreateWindow(1600,900,"Visualizer",NULL,NULL);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -90,6 +99,7 @@ void list::initializeOpenGL() {
 
 void list::drawBar(float x, float y, float width, float height) {
     glBegin(GL_QUADS);
+    glColor3f(1.0, 0.2, 0.7);
     glVertex2f(x, y); //bottom left vertex
     glVertex2f(x + width, y); //bottom right
     glVertex2f(x + width, y + height); //top right
@@ -110,50 +120,90 @@ void list::drawList() {
 
 void list::visualizeInsertionSort() {
     //variables for the algorithm
-    bool isSorting = false;
+    bool innerLoop = false;
     int i = 1;
     int j;
     int temp;
     
-    //variables for delay
-    double lastUpdateTime = glfwGetTime();
-    double currentTime;
-    double delay = 0.1;
     
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //keeps rendering the completed list
+        if (i >= len) {
+            drawList();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+            continue;
+        }
+        
         drawList();
 
-        currentTime = glfwGetTime();
-        if (currentTime - lastUpdateTime > delay) {
-            lastUpdateTime = currentTime;
-            
-            //start or continue one iteration of the outer loop
-            if (!isSorting && i < len) {
-                temp = contents[i];
-                j = i - 1;
-                isSorting = true;
-            }
-
-            //perform one step of insertion sort
-            if (isSorting) {
-                if (j >=0 && contents[j] > temp) {
-                    contents[j+1] = contents[j];
-                    j--;
-                    drawList();
-                } else {
-                    contents[j+1] = temp;
-                    drawList();
-                    i++;
-                    isSorting = false;
-                }
+        if (!innerLoop) { //in the outer loop
+            temp = contents[i];
+            j = i - 1;
+            innerLoop = true;
+        } else { //in the outer loop
+            if (j >=0 && contents[j] > temp) { //j still decrementing
+                contents[j+1] = contents[j];
+                j--;
+            } else { //j done decrementing, time to swap in temp
+                contents[j+1] = temp;
+                i++;
+                innerLoop = false;
             }
         }
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    glfwTerminate();
 }
+
+void list::visualizeSelectionSort() {
+    int min_index;
+    int i = 0;
+    int j;
+    int temp;
+    bool innerLoop = false;
+
+    while (!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        //keeps rendering the completed list
+        if (i >= len - 1) {
+            drawList();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+            continue;
+        }
+
+        drawList();
+
+        if (!innerLoop) { //in the outer loop
+            j = i + 1;
+            innerLoop = true;
+            min_index = i;
+        } else { //in the inner loop
+            if (j < len) { //j still iterating
+                if (contents[j] < contents[min_index]) {
+                    min_index = j;
+                }
+                j++;
+            } else { //j done iterating, time to swap
+                if (min_index != i) {
+                    // swap
+                    temp = contents[i];
+                    contents[i] = contents[min_index];
+                    contents[min_index] = temp;
+                }
+                i++;
+                innerLoop = false;
+
+            }
+        }
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+}
+
