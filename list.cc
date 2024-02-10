@@ -55,10 +55,13 @@ void list::reset() {
 void list::visualize(int input) {
     initializeOpenGL();
     if (input == 1) {
+        std::cout << "Insertion Sort\n";
         visualizeInsertionSort();
     } else if (input == 2) {
+        std::cout << "Selection Sort\n";
         visualizeSelectionSort();
     } else if (input == 3) {
+        std::cout << "Bubble Sort\n";
         visualizeBubbleSort();
     } else {
         std::cerr << "Invalid input" << std::endl;
@@ -101,6 +104,9 @@ void list::initializeOpenGL() {
 
 const std::vector<float> list::defaultColor = {1.0, 1.0, 1.0};
 
+
+
+
 void list::drawBar(float x, float y, float width, float height, const std::vector<float>& color = defaultColor) {
     glBegin(GL_QUADS);
     glColor3f(color[0], color[1], color[2]);
@@ -118,7 +124,11 @@ void list::drawList(int elementBeingSorted = -1) {
     barWidth = 2.0 / len;
     for (int i = 0; i < len; i++) {
         barHeight = (*(contents + i) / static_cast<float>(max)) * 2;
-        drawBar((-1 + i * barWidth), -1, barWidth, barHeight);
+        if (i == elementBeingSorted) {
+            drawBar((-1 + i * barWidth), -1, barWidth, barHeight, {0.0, 1.0, 0.0});
+        } else {
+            drawBar((-1 + i * barWidth), -1, barWidth, barHeight);
+        }
     }
 }
 
@@ -141,7 +151,7 @@ void list::visualizeInsertionSort() {
             continue;
         }
         
-        drawList();
+        drawList(j);
 
         if (!innerLoop) { //in the outer loop
             temp = contents[i];
@@ -181,7 +191,7 @@ void list::visualizeSelectionSort() {
             continue;
         }
 
-        drawList();
+        drawList(j);
 
         if (!innerLoop) { //in the outer loop
             j = i + 1;
