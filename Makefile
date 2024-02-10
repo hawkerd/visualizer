@@ -1,6 +1,9 @@
 # Compiler
 CXX = g++
 
+CXXFLAGS = -std=c++11
+
+
 # Include directories for header files
 INCLUDES = -I/opt/local/include
 
@@ -22,10 +25,10 @@ EXE = visualizer
 all: $(EXE)
 
 $(EXE): $(OBJS)
-	$(CXX) $(INCLUDES) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$(CXX) $(INCLUDES) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 .cc.o:
-	$(CXX) $(INCLUDES) -c $<
+	$(CXX) $(INCLUDES) $(CXXFLAGS) -c $<
 
 clean:
 	rm -f $(OBJS) $(EXE)

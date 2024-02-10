@@ -13,8 +13,8 @@ class list {
         //FUNCTIONS:
         
         //functions involved in algorithm visualization
-        void drawBar(float x, float y, float width, float height); //draws a bar
-        void drawList(); //draws the list in its current state
+        void drawBar(float x, float y, float width, float height, const std::vector<float>& color); //draws a bar of the specified color, or in white
+        void drawList(int elementBeingSorted); //draws the list in its current state
         void visualizeInsertionSort();
         void visualizeSelectionSort();
         void visualizeBubbleSort();
@@ -33,20 +33,21 @@ class list {
         int max;
         int len;
         static const int minDef = 0;
-        static const int maxDef = 35;
-        static const int lenDef = 40;
+            static const int maxDef = 35;
+            static const int lenDef = 40;
 
-        //variables necessary for rendering
-        GLFWwindow* window;
+            //variables necessary for rendering
+            GLFWwindow* window;
+            const static std::vector<float> defaultColor;
 
-    public:
-        //constructors and destructor
-        list();
-        list(int len, int min, int max);
-        ~list();
+        public:
+            //constructors and destructor
+            list();
+            list(int len, int min, int max);
+            ~list();
 
-        //algorithm visualization
-        void visualize(int input);
+            //algorithm visualization
+            void visualize(int input);
 };
 
 

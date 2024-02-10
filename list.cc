@@ -61,7 +61,7 @@ void list::visualize(int input) {
     } else if (input == 3) {
         visualizeBubbleSort();
     } else {
-
+        std::cerr << "Invalid input" << std::endl;
     }
     glfwTerminate();
     reset();
@@ -99,9 +99,11 @@ void list::initializeOpenGL() {
     //glfwTerminate();
 }
 
-void list::drawBar(float x, float y, float width, float height) {
+const std::vector<float> list::defaultColor = {1.0, 1.0, 1.0};
+
+void list::drawBar(float x, float y, float width, float height, const std::vector<float>& color = defaultColor) {
     glBegin(GL_QUADS);
-    glColor3f(1.0, 0.2, 0.7);
+    glColor3f(color[0], color[1], color[2]);
     glVertex2f(x, y); //bottom left vertex
     glVertex2f(x + width, y); //bottom right
     glVertex2f(x + width, y + height); //top right
@@ -109,7 +111,7 @@ void list::drawBar(float x, float y, float width, float height) {
     glEnd();
 }
 
-void list::drawList() {
+void list::drawList(int elementBeingSorted = -1) {
     float barHeight;
     float barWidth;
 
