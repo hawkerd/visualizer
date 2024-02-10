@@ -67,6 +67,8 @@ void list::visualize(int input) {
         std::cerr << "Invalid input" << std::endl;
     }
     glfwTerminate();
+    //FT_Done_Face(face);
+    //FT_Done_FreeType(ft);
     reset();
 }
 
@@ -100,6 +102,7 @@ void list::initializeOpenGL() {
 
     //close the window
     //glfwTerminate();
+
 }
 
 const std::vector<float> list::defaultColor = {1.0, 1.0, 1.0};

@@ -5,8 +5,9 @@ int main() {
 
     list myList;
     
-    std::cout << "Welcome! This program offers visualization for different algorithms\n";
-    std::cout << "Input a number corresponding to an algorithm, or 0 to quit\n";
+    std::cout << "--------------------------------------------------------------------\n";
+    std::cout << "Welcome! This program offers visualization for different algorithms.\n";
+    std::cout << "Input a number corresponding to an algorithm, or 0 to quit.\n";
     
     while (input != 0) {
         std::cout << "-------Menu-------\n";

@@ -2,10 +2,9 @@
 #include <vector>
 #include <iostream>
 #include <random>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <ft2build.h>
-#include FT_FREETYPE_H
+#include "dependencies/include/GL/glew.h"
+#include "dependencies/include/GLFW/glfw3.h"
+
 
 
 #ifndef LIST_H
@@ -36,12 +35,14 @@ class list {
         int max;
         int len;
         static const int minDef = 0;
-            static const int maxDef = 35;
-            static const int lenDef = 40;
+        static const int maxDef = 35;
+        static const int lenDef = 40;
 
-            //variables necessary for rendering
-            GLFWwindow* window;
-            const static std::vector<float> defaultColor;
+        //variables necessary for rendering
+        GLFWwindow* window;
+        const static std::vector<float> defaultColor;
+        //FT_Library ft;
+        //FT_Face face;
 
         public:
             //constructors and destructor
