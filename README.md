@@ -16,8 +16,6 @@ The Visualizer is a C++ application designed to provide a graphical representati
 To run this project, ensure you have the following installed:
 
 - GCC Compiler (with support for C++11)
-- GLFW, GLEW, and OpenGL libraries
-- Freetype library (for font rendering)
 
 ## Building and Running the Project
 
