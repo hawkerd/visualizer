@@ -4,6 +4,10 @@
 #include <random>
 #include "../dependencies/include/GL/glew.h"
 #include "../dependencies/include/GLFW/glfw3.h"
+#include "../dependencies/imgui/imgui.h"
+#include "../dependencies/imgui/backends/imgui_impl_glfw.h"
+#include "../dependencies/imgui/backends/imgui_impl_opengl3.h"
+
 
 
 

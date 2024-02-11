@@ -10,7 +10,8 @@ BIN_DIR = bin
 OBJ_DIR = $(BIN_DIR)/obj_dir
 
 # Include directories for header files
-INCLUDES = -I$(DEPENDENCIES_DIR)/include
+INCLUDES = -I$(DEPENDENCIES_DIR)/include -I/dependencies/imgui -I/dependencies/imgui/backends
+
 # Library directories for libraries
 LDFLAGS = -L$(DEPENDENCIES_DIR)/lib
 
@@ -18,7 +19,9 @@ LDFLAGS = -L$(DEPENDENCIES_DIR)/lib
 LDLIBS = -lglfw -lglew -framework OpenGL -lfreetype
 
 # Source files
-SRCS = $(wildcard src/*.cc)
+IMGUI_SRCS = $(wildcard imgui/*.cpp) $(wildcard imgui/backends/*.cpp)
+SRCS = $(wildcard src/*.cc) $(IMGUI_SRCS)
+
 # Object files (placed in OBJ_DIR)
 OBJS = $(patsubst src/%.cc,$(OBJ_DIR)/%.o,$(SRCS))
 
@@ -30,7 +33,7 @@ all: $(EXE)
 
 $(EXE): $(OBJS)
 	mkdir -p $(BIN_DIR)
-	$(CXX) $(INCLUDES) $(CXXFLAGS) $(LDFLAGS) -o $(BIN_DIR)/$@ $^ $(LDLIBS)
+	$(CXX) -v $(INCLUDES) $(CXXFLAGS) $(LDFLAGS) -o $(BIN_DIR)/$@ $^ $(LDLIBS)
 
 $(OBJ_DIR)/%.o: src/%.cc
 	mkdir -p $(OBJ_DIR)
