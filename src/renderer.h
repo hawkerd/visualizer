@@ -2,9 +2,9 @@
 #include <iostream>
 #include "../dependencies/include/GL/glew.h"
 #include "../dependencies/include/GLFW/glfw3.h"
-//#include "../dependencies/imgui/imgui.h"
-//#include "../dependencies/imgui/imgui_impl_glfw.h"
-//#include "../dependencies/imgui/imgui_impl_opengl3.h"
+#include "../dependencies/imgui/imgui.h"
+#include "../dependencies/imgui/imgui_impl_glfw.h"
+#include "../dependencies/imgui/imgui_impl_opengl3.h"
 #include "list.h"
 
 #ifndef RENDERER_H
@@ -34,7 +34,7 @@ class renderer {
         list myList;
         GLFWwindow* window;
         const static std::vector<float> defaultColor;
-        //ImGuiIO* io;
+        ImGuiIO* io;
 };
 
 #endif

@@ -19,8 +19,8 @@ LDFLAGS = -L$(DEPENDENCIES_DIR)/lib
 LDLIBS = -lglfw -lglew -framework OpenGL
 
 # Source files
-# IMGUI_SRCS = $(wildcard dependencies/imgui/*.cpp) $(wildcard dependencies/imgui/backends/*.cpp)
-SRCS = $(wildcard src/*.cc) # $(IMGUI_SRCS)
+IMGUI_SRCS = $(wildcard dependencies/imgui/*.cpp) $(wildcard dependencies/imgui/backends/*.cpp)
+SRCS = $(wildcard src/*.cc) $(IMGUI_SRCS)
 
 # Object files (placed in OBJ_DIR)
 OBJS = $(patsubst src/%.cc,$(OBJ_DIR)/%.o,$(SRCS))

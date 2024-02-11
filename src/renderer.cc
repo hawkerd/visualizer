@@ -9,9 +9,9 @@ renderer::renderer() {
 
 renderer::~renderer() {
     glfwTerminate();
-    //ImGui_ImplOpenGL3_Shutdown();
-    //ImGui_ImplGlfw_Shutdown();
-    //ImGui::DestroyContext();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void renderer::initialize(){
@@ -37,12 +37,12 @@ void renderer::initialize(){
         throw std::runtime_error("Failed to initialize GLEW");;
     }
 
-    //IMGUI_CHECKVERSION();
-    //ImGui::CreateContext();
-    //io = &ImGui::GetIO(); (void)io;
-    //ImGui::StyleColorsDark();
-    //ImGui_ImplGlfw_InitForOpenGL(window, true);
-    //ImGui_ImplOpenGL3_Init("#version 130");
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    io = &ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 130");
 }
 
 //Utility functions for the visualizers
@@ -117,7 +117,6 @@ void renderer::visualizeInsertionSort() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    myList.reset();
 }
 void renderer::visualizeSelectionSort() {
     int len = myList.len;
@@ -168,7 +167,6 @@ void renderer::visualizeSelectionSort() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    myList.reset();
 }
 void renderer::visualizeBubbleSort() {
     int len = myList.len;
@@ -218,5 +216,4 @@ void renderer::visualizeBubbleSort() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    myList.reset();
 }
