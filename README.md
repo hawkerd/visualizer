@@ -1,25 +1,40 @@
-# Visualizer README
+# Visualizer
 
 ## Overview
 
-The Visualizer is a C++ application designed to provide a graphical representation of various sorting algorithms. Utilizing modern graphics libraries like GLFW, GLEW, and OpenGL, it offers a rich, interactive visual experience that allows intuition building.
+The Visualizer is a C++ application designed to graphically represent various sorting algorithms. It utilizes modern graphics libraries such as GLFW, GLEW, and OpenGL for rendering, and ImGui for an interactive user interface. This tool offers an intuitive and interactive way to understand and analyze the behavior of different sorting algorithms.
 
 ## Features
 
-- **Graphical Rendering**: Leverages OpenGL for high-performance graphics rendering.
-- **Library Integration**: Uses GLFW and GLEW for window management and OpenGL function handling, respectively. Uses ImGui to provide a graphical user interface.
-- **Dynamic Visualization**: Capable of handling different types of data for visualization.
-- **Modular Structure**: Source files, object files, and executables are organized into separate directories.
+- **Graphical Rendering**: High-performance graphics rendering using OpenGL.
+- **Library Integration**: GLFW for window management, GLEW for OpenGL function handling, and ImGui for graphical user interface.
+- **Dynamic Visualization**: Capable of visualizing various data types.
+- **Modular Structure**: Well-organized codebase with separate directories for source files, object files, and executables.
 
 ## Prerequisites
 
-To run this project, ensure you have the following installed:
+To run this project (not on MacOS), you need:
 
-- GCC Compiler (with support for C++11)
+- GCC Compiler (with C++11 support)
 
-## Building and Running the Project
+## Running the Project
 
-1. **Clone the Repository**: Obtain a copy of the source code from the project's repository.
+### For macOS Users
 
-2. **Run the Application**:
-   - Execute the command `make run` from the root directory. This will start the application.
+- **Pre-compiled Binary**: 
+  - If you are on macOS, you can download the pre-compiled binary from the [Releases](https://github.com/hawkerd/visualizer/releases) section of the GitHub repository.
+  - Simply download the binary and run it on your macOS system.
+
+### For Other Systems
+
+- **Compiling from Source**:
+  1. **Clone the Repository**: Obtain a copy of the source code from the project's GitHub repository.
+     ```
+     git clone https://github.com/hawkerd/visualizer.git
+     ```
+  2. **Build and Run the Project**:
+     - Navigate to the root directory of the project.
+     - Run the following command:
+       ```
+       make run
+       ```
