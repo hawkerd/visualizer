@@ -7,7 +7,7 @@ The Visualizer is a C++ application designed to provide a graphical representati
 ## Features
 
 - **Graphical Rendering**: Leverages OpenGL for high-performance graphics rendering.
-- **Library Integration**: Uses GLFW and GLEW for window management and OpenGL function handling, respectively.
+- **Library Integration**: Uses GLFW and GLEW for window management and OpenGL function handling, respectively. Uses ImGui to provide a graphical user interface.
 - **Dynamic Visualization**: Capable of handling different types of data for visualization.
 - **Modular Structure**: Source files, object files, and executables are organized into separate directories.
 

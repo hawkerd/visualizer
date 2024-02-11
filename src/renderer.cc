@@ -3,11 +3,17 @@
 const std::vector<float> renderer::defaultColor = {1.0, 1.0, 1.0};
 
 renderer::renderer() {
-    initialize();
+    //initializes everything and starts the rendering loop
+
+    currentState = AppState::Menu;
     myList = list();
+    initialize();
+    render();
 }
 
 renderer::~renderer() {
+    //cleanup
+
     glfwTerminate();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -15,6 +21,8 @@ renderer::~renderer() {
 }
 
 void renderer::initialize(){
+    //function to initialize glfw, glew, and imgui
+
     //initializes glfw
     if (!glfwInit()) {
         throw std::runtime_error("Failed to initialize GLFW");
@@ -45,7 +53,33 @@ void renderer::initialize(){
     ImGui_ImplOpenGL3_Init("#version 120");
 }
 
-//Utility functions for the visualizers
+void renderer::menu() {
+    //Function to switch app state for proper rendering
+
+    // ImGui frame start
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    if (ImGui::Button("Insertion Sort")) {
+        currentState = AppState::InsertionSort;
+    }
+    if (ImGui::Button("Selection Sort")) {
+        currentState = AppState::SelectionSort;
+    }
+    if (ImGui::Button("Bubble Sort")) {
+        currentState = AppState::BubbleSort;
+    }
+    if (ImGui::Button("Quit")) {
+        glfwSetWindowShouldClose(window, true);
+    }
+
+    // Render ImGui
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+//Utility functions for the visualizer
 void renderer::drawBar(float x, float y, float width, float height, const std::vector<float>& color = defaultColor) {
     glBegin(GL_QUADS);
     glColor3f(color[0], color[1], color[2]);
@@ -74,21 +108,24 @@ void renderer::drawList(int elementBeingSorted = -1) {
         }
     }
 }
-
-//Visualizes different sorting algorithms
-void renderer::visualizeInsertionSort() {
+void renderer::insertionSort() {
+    //variables for the algorithm
+    myList.reset();
     int len = myList.len;
     int* contents = myList.contents;
-
-    //variables for the algorithm
     bool innerLoop = false;
     int i = 1;
     int j;
     int temp;
     
-    bool stop = false;
+    //variabless for the visualizer
+    bool paused = false;
+    bool menu = false;
 
     while (!glfwWindowShouldClose(window)) {
+        if (menu) {
+            return;
+        }
         glClear(GL_COLOR_BUFFER_BIT);
 
         // ImGui frame start
@@ -96,18 +133,20 @@ void renderer::visualizeInsertionSort() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // ImGui Stop/Resume button
-        if (ImGui::Button(stop ? "Resume" : "Stop")) {
-            stop = !stop;
+        // ImGui Buttons
+        if (ImGui::Button(paused ? "Resume" : "Stop")) {
+            paused = !paused;
         }
-
-        // ImGui Reset button
         if (ImGui::Button("Reset")) {
             myList.reset();
             contents = myList.contents;
             i = 1;
             innerLoop = false;
             j = -1;
+        }
+        if (ImGui::Button("Menu")) {
+            currentState = AppState::Menu;
+            menu = true;
         }
 
         // Render ImGui
@@ -117,7 +156,7 @@ void renderer::visualizeInsertionSort() {
 
 
         //keeps rendering the completed or stopped list
-        if (i >= len || stop) {
+        if (i >= len || paused) {
             drawList();
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -145,18 +184,25 @@ void renderer::visualizeInsertionSort() {
         glfwPollEvents();
     }
 }
-void renderer::visualizeSelectionSort() {
+void renderer::selectionSort() {
+    //variables for the algorithm
+    myList.reset();
     int len = myList.len;
     int* contents = myList.contents;
-
     int min_index;
     int i = 0;
     int j;
     int temp;
     bool innerLoop = false;
-    bool stop = false;
+    
+    //variables for the visualizer
+    bool paused = false;
+    bool menu = false;
 
     while (!glfwWindowShouldClose(window)) {
+        if(menu) {
+            return;
+        }
         glClear(GL_COLOR_BUFFER_BIT);
 
         // ImGui frame start
@@ -164,18 +210,20 @@ void renderer::visualizeSelectionSort() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // ImGui Stop/Resume button
-        if (ImGui::Button(stop ? "Resume" : "Stop")) {
-            stop = !stop;
+        // ImGui Buttons
+        if (ImGui::Button(paused ? "Resume" : "Stop")) {
+            paused = !paused;
         }
-
-        // ImGui Reset button
         if (ImGui::Button("Reset")) {
             myList.reset();
             contents = myList.contents;
             i = 1;
             innerLoop = false;
             j = -1;
+        }
+        if (ImGui::Button("Menu")) {
+            currentState = AppState::Menu;
+            menu = true;
         }
 
         // Render ImGui
@@ -185,7 +233,7 @@ void renderer::visualizeSelectionSort() {
 
 
         //keeps rendering the completed or stopped list
-        if (i >= len || stop) {
+        if (i >= len || paused) {
             drawList();
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -221,7 +269,9 @@ void renderer::visualizeSelectionSort() {
         glfwPollEvents();
     }
 }
-void renderer::visualizeBubbleSort() {
+void renderer::bubbleSort() {
+    //variables for the algorithm
+    myList.reset();
     int len = myList.len;
     int* contents = myList.contents;
     int i = 0;
@@ -229,9 +279,15 @@ void renderer::visualizeBubbleSort() {
     int temp;
     bool innerLoop = false;
     bool swapped;
-    bool stop = false;
+    
+    //variables for the visualizer
+    bool paused = false;
+    bool menu = false;
 
     while (!glfwWindowShouldClose(window)) {
+        if (menu) {
+            return;
+        }
         glClear(GL_COLOR_BUFFER_BIT);
 
         // ImGui frame start
@@ -239,18 +295,20 @@ void renderer::visualizeBubbleSort() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // ImGui Stop/Resume button
-        if (ImGui::Button(stop ? "Resume" : "Stop")) {
-            stop = !stop;
+        // ImGui Buttons
+        if (ImGui::Button(paused ? "Resume" : "Stop")) {
+            paused = !paused;
         }
-
-        // ImGui Reset button
         if (ImGui::Button("Reset")) {
             myList.reset();
             contents = myList.contents;
             i = 1;
             innerLoop = false;
             j = -1;
+        }
+        if (ImGui::Button("Menu")) {
+            currentState = AppState::Menu;
+            menu = true;
         }
 
         // Render ImGui
@@ -260,7 +318,7 @@ void renderer::visualizeBubbleSort() {
 
 
         //keeps rendering the completed or stopped list
-        if (i >= len || stop) {
+        if (i >= len || paused) {
             drawList();
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -290,6 +348,30 @@ void renderer::visualizeBubbleSort() {
                 }
 
             }
+        }
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+}
+
+void renderer::render() {
+    while (!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        switch (currentState) {
+            case AppState::Menu:
+                menu();
+                break;
+            case AppState::InsertionSort:
+                insertionSort();
+                break;
+            case AppState::SelectionSort:
+                selectionSort();
+                break;
+            case AppState::BubbleSort:
+                bubbleSort();
+                break;
         }
 
         glfwSwapBuffers(window);
