@@ -42,7 +42,7 @@ void renderer::initialize(){
     io = &ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    ImGui_ImplOpenGL3_Init("#version 120");
 }
 
 //Utility functions for the visualizers
@@ -86,11 +86,38 @@ void renderer::visualizeInsertionSort() {
     int j;
     int temp;
     
+    bool stop = false;
+
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //keeps rendering the completed list
-        if (i >= len) {
+        // ImGui frame start
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // ImGui Stop/Resume button
+        if (ImGui::Button(stop ? "Resume" : "Stop")) {
+            stop = !stop;
+        }
+
+        // ImGui Reset button
+        if (ImGui::Button("Reset")) {
+            myList.reset();
+            contents = myList.contents;
+            i = 1;
+            innerLoop = false;
+            j = -1;
+        }
+
+        // Render ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+
+        //keeps rendering the completed or stopped list
+        if (i >= len || stop) {
             drawList();
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -127,12 +154,38 @@ void renderer::visualizeSelectionSort() {
     int j;
     int temp;
     bool innerLoop = false;
+    bool stop = false;
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //keeps rendering the completed list
-        if (i >= len - 1) {
+        // ImGui frame start
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // ImGui Stop/Resume button
+        if (ImGui::Button(stop ? "Resume" : "Stop")) {
+            stop = !stop;
+        }
+
+        // ImGui Reset button
+        if (ImGui::Button("Reset")) {
+            myList.reset();
+            contents = myList.contents;
+            i = 1;
+            innerLoop = false;
+            j = -1;
+        }
+
+        // Render ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+
+        //keeps rendering the completed or stopped list
+        if (i >= len || stop) {
             drawList();
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -176,12 +229,38 @@ void renderer::visualizeBubbleSort() {
     int temp;
     bool innerLoop = false;
     bool swapped;
+    bool stop = false;
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //keeps rendering the completed list
-        if (i >= len - 1) {
+        // ImGui frame start
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // ImGui Stop/Resume button
+        if (ImGui::Button(stop ? "Resume" : "Stop")) {
+            stop = !stop;
+        }
+
+        // ImGui Reset button
+        if (ImGui::Button("Reset")) {
+            myList.reset();
+            contents = myList.contents;
+            i = 1;
+            innerLoop = false;
+            j = -1;
+        }
+
+        // Render ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+
+        //keeps rendering the completed or stopped list
+        if (i >= len || stop) {
             drawList();
             glfwSwapBuffers(window);
             glfwPollEvents();
