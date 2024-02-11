@@ -1,15 +1,17 @@
 #include "list.h"
+#include "renderer.h"
 
 int main() {
+    renderer* myRenderer;
     int input = 1;
-
-    list myList;
     
     std::cout << "--------------------------------------------------------------------\n";
     std::cout << "Welcome! This program offers visualization for different algorithms.\n";
     std::cout << "Input a number corresponding to an algorithm, or 0 to quit.\n";
     
+    
     while (input != 0) {
+        myRenderer = new renderer();
         std::cout << "-------Menu-------\n";
         std::cout << "0. Quit\n";
         std::cout << "1. Insertion Sort\n";
@@ -19,10 +21,18 @@ int main() {
 
         std:: cin >> input;
 
-        if(input == 0 || input < 0 || input > 3) {
-            break;
+        if(input == 0) {
+            std::cout << "Goodbye!\n";
+        } else if (input == 1) {
+            myRenderer->visualizeInsertionSort();
+        } else if (input == 2) {
+            myRenderer->visualizeSelectionSort();
+        } else if (input == 3) {
+            myRenderer->visualizeBubbleSort();
         } else {
-            myList.visualize(input);
+            std::cout << "Invalid input. Please try again.\n";
         }
+        delete myRenderer;
     }
+    return 0;
 }
