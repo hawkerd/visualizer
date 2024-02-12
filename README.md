@@ -15,27 +15,24 @@ This Visualizer is a C++ application designed to graphically represent various s
 
 ### Prerequisites
 - GCC Compiler (with C++11 support)
-- GLFW, GLEW, and OpenGL installed on your system.
+- OpenGL installed on your system.
 
-### Installation
+### Executino Instructions (MacOS)
 
-- **GLFW and GLEW**:
-  - For macOS:
+- **Installing GLFW and GLEW**:
     ```bash
     brew install glfw glew
     ```
-- **OpenGL**: Usually comes pre-installed with the operating system. If not, install it using your system's package manager.
-
-### Execution
-
-- **Compiling from Source**:
-  - **Clone the Repository**:
+    or
+    ```bash
+    sudo port install glfw glew
     ```
+- **Cloning Repository**:
+    ```bash
     git clone https://github.com/hawkerd/visualizer.git
     ```
-  - **Build and Run the Project**:
-    ```
+- **Execution**:
+    ```bash
     cd visualizer
     make run
     ```
-
