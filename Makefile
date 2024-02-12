@@ -10,10 +10,10 @@ BIN_DIR = bin
 OBJ_DIR = $(BIN_DIR)/obj_dir
 
 # Include directories for header files
-INCLUDES = -I$(DEPENDENCIES_DIR)/include -I/dependencies/imgui
+INCLUDES = -Idependencies/imgui -I/opt/local/include
 
 # Library directories for libraries
-LDFLAGS = -L$(DEPENDENCIES_DIR)/lib
+LDFLAGS = -L/opt/local/lib
 
 # Libraries to link
 LDLIBS = -lglfw -lglew -framework OpenGL
