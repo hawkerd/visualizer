@@ -7,6 +7,8 @@ renderer::renderer() {
 
     currentState = AppState::Menu;
     myList = list();
+    numElements = myList.len;
+    barColor = defaultColor;
     initialize();
     render();
 }
@@ -53,6 +55,8 @@ void renderer::initialize(){
     ImGui_ImplOpenGL3_Init("#version 120");
 }
 
+
+//Utility functions for rendering
 void renderer::menu() {
     //Function to switch app state for proper rendering
 
@@ -61,6 +65,8 @@ void renderer::menu() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    ImGui::BeginGroup();
+    ImGui::Text("Available Algorithms:");
     if (ImGui::Button("Insertion Sort")) {
         currentState = AppState::InsertionSort;
     }
@@ -70,16 +76,32 @@ void renderer::menu() {
     if (ImGui::Button("Bubble Sort")) {
         currentState = AppState::BubbleSort;
     }
+    if (ImGui::Button("Merge Sort")) {
+        currentState = AppState::MergeSort;
+    }
     if (ImGui::Button("Quit")) {
         glfwSetWindowShouldClose(window, true);
     }
+    ImGui::EndGroup();
+
+    ImGui::SameLine();
+
+    ImGui::BeginGroup();
+    ImGui::Text("Settings");
+    ImGui::Text("Number of elements:");
+    ImGui::SliderInt("##",&numElements, 1, 250);
+    ImGui::Text("Bar Color:");
+    ImGui::ColorEdit3("##", barColor.data());
+    if (ImGui::Button("Save")) {
+        myList.len = numElements;
+        myList.reset();
+    }
+    ImGui::EndGroup();
 
     // Render ImGui
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-
-//Utility functions for the visualizer
 void renderer::drawBar(float x, float y, float width, float height, const std::vector<float>& color = defaultColor) {
     glBegin(GL_QUADS);
     glColor3f(color[0], color[1], color[2]);
@@ -104,7 +126,7 @@ void renderer::drawList(int elementBeingSorted = -1) {
         if (i == elementBeingSorted) {
             drawBar((-1 + i * barWidth), -1, barWidth, barHeight, {0.0, 1.0, 0.0});
         } else {
-            drawBar((-1 + i * barWidth), -1, barWidth, barHeight);
+            drawBar((-1 + i * barWidth), -1, barWidth, barHeight, barColor);
         }
     }
 }
@@ -128,11 +150,11 @@ void renderer::insertionSort() {
         }
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //IMGUI
         // ImGui frame start
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
         // ImGui Buttons
         if (ImGui::Button(paused ? "Resume" : "Stop")) {
             paused = !paused;
@@ -141,19 +163,16 @@ void renderer::insertionSort() {
             myList.reset();
             contents = myList.contents;
             i = 1;
+            j = 0;
             innerLoop = false;
-            j = -1;
         }
         if (ImGui::Button("Menu")) {
             currentState = AppState::Menu;
             menu = true;
         }
-
         // Render ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
 
         //keeps rendering the completed or stopped list
         if (i >= len || paused) {
@@ -163,8 +182,8 @@ void renderer::insertionSort() {
             continue;
         }
         
+        //draw list and perform one step
         drawList(j);
-
         if (!innerLoop) { //in the outer loop
             temp = contents[i];
             j = i - 1;
@@ -205,11 +224,11 @@ void renderer::selectionSort() {
         }
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //IMGUI
         // ImGui frame start
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
         // ImGui Buttons
         if (ImGui::Button(paused ? "Resume" : "Stop")) {
             paused = !paused;
@@ -217,15 +236,14 @@ void renderer::selectionSort() {
         if (ImGui::Button("Reset")) {
             myList.reset();
             contents = myList.contents;
-            i = 1;
+            i = 0;
+            j = 1;
             innerLoop = false;
-            j = -1;
         }
         if (ImGui::Button("Menu")) {
             currentState = AppState::Menu;
             menu = true;
         }
-
         // Render ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -240,8 +258,8 @@ void renderer::selectionSort() {
             continue;
         }
 
+        //draws list and iterates once
         drawList(j);
-
         if (!innerLoop) { //in the outer loop
             j = i + 1;
             innerLoop = true;
@@ -275,10 +293,10 @@ void renderer::bubbleSort() {
     int len = myList.len;
     int* contents = myList.contents;
     int i = 0;
-    int j;
+    int j = -1;
     int temp;
     bool innerLoop = false;
-    bool swapped;
+    bool swapped = false;
     
     //variables for the visualizer
     bool paused = false;
@@ -290,11 +308,11 @@ void renderer::bubbleSort() {
         }
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //IMGUI
         // ImGui frame start
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
         // ImGui Buttons
         if (ImGui::Button(paused ? "Resume" : "Stop")) {
             paused = !paused;
@@ -302,15 +320,15 @@ void renderer::bubbleSort() {
         if (ImGui::Button("Reset")) {
             myList.reset();
             contents = myList.contents;
-            i = 1;
-            innerLoop = false;
+            i = 0;
             j = -1;
+            innerLoop = false;
+            swapped = false;
         }
         if (ImGui::Button("Menu")) {
             currentState = AppState::Menu;
             menu = true;
         }
-
         // Render ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -325,8 +343,8 @@ void renderer::bubbleSort() {
             continue;
         }
 
-        drawList();
-
+        //draws list and iterates once
+        drawList(j);
         if (!innerLoop) { //in the outer loop
             j = 0;
             innerLoop = true;
@@ -354,7 +372,8 @@ void renderer::bubbleSort() {
         glfwPollEvents();
     }
 }
-
+void renderer::mergeSort() {}
+//main render loop
 void renderer::render() {
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -370,6 +389,9 @@ void renderer::render() {
                 selectionSort();
                 break;
             case AppState::BubbleSort:
+                bubbleSort();
+                break;
+            case AppState::MergeSort:
                 bubbleSort();
                 break;
         }

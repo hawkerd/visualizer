@@ -15,6 +15,7 @@ enum class AppState {
     InsertionSort,
     SelectionSort,
     BubbleSort,
+    MergeSort
 };
 
 class renderer {
@@ -39,6 +40,7 @@ class renderer {
         void insertionSort();
         void selectionSort();
         void bubbleSort();
+        void mergeSort();
         void drawBar(float x, float y, float width, float height, const std::vector<float>& color);
         void drawList(int elementBeingSorted);
 
@@ -48,6 +50,10 @@ class renderer {
         const static std::vector<float> defaultColor;
         ImGuiIO* io;
         AppState currentState;
+
+        //render settings
+        int numElements;
+        std::vector<float> barColor;
 };
 
 #endif
