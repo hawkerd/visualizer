@@ -17,13 +17,13 @@ This Visualizer is a C++ application designed to graphically represent various s
 - GCC Compiler (with C++11 support)
 - OpenGL installed on your system.
 
-### Executino Instructions (MacOS)
-
+### Execution Instructions (MacOS)
 - **Installing GLFW and GLEW**:
+  - Using Homebrew
     ```bash
     brew install glfw glew
     ```
-    or
+  - Using MacPorts
     ```bash
     sudo port install glfw glew
     ```
