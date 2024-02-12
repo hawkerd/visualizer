@@ -41,6 +41,7 @@ class renderer {
         void selectionSort();
         void bubbleSort();
         void mergeSort();
+        void imgui();
         void drawBar(float x, float y, float width, float height, const std::vector<float>& color);
         void drawList(int elementBeingSorted);
 
@@ -54,6 +55,7 @@ class renderer {
         //render settings
         int numElements;
         std::vector<float> barColor;
+        float delay;
 };
 
 #endif

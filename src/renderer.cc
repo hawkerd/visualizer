@@ -7,8 +7,12 @@ renderer::renderer() {
 
     currentState = AppState::Menu;
     myList = list();
+    
     numElements = myList.len;
     barColor = defaultColor;
+    delay = 0.0;
+    
+    
     initialize();
     render();
 }
@@ -57,6 +61,9 @@ void renderer::initialize(){
 
 
 //Utility functions for rendering
+void renderer::imgui() {
+    
+}
 void renderer::menu() {
     //Function to switch app state for proper rendering
 
@@ -84,18 +91,21 @@ void renderer::menu() {
     }
     ImGui::EndGroup();
 
-    ImGui::SameLine();
-
+    ImGui::SameLine();    
     ImGui::BeginGroup();
+
     ImGui::Text("Settings");
     ImGui::Text("Number of elements:");
     ImGui::SliderInt("##",&numElements, 1, 250);
     ImGui::Text("Bar Color:");
-    ImGui::ColorEdit3("##", barColor.data());
+    ImGui::ColorEdit3("##color", barColor.data());
+    ImGui::Text("Delay:");
+    ImGui::SliderFloat("##delay", &delay, 0.0f, 0.5f, "%.3f seconds");
     if (ImGui::Button("Save")) {
         myList.len = numElements;
         myList.reset();
     }
+
     ImGui::EndGroup();
 
     // Render ImGui
@@ -143,12 +153,45 @@ void renderer::insertionSort() {
     //variabless for the visualizer
     bool paused = false;
     bool menu = false;
+    double lastUpdateTime = 0;
+    double currentTime;
 
     while (!glfwWindowShouldClose(window)) {
         if (menu) {
             return;
         }
+
         glClear(GL_COLOR_BUFFER_BIT);
+
+        currentTime = glfwGetTime();
+
+        //renders
+        if (i >= len || paused) { //paused or completed
+            drawList();
+        } else if (currentTime - lastUpdateTime < delay) { //delayed
+            drawList(j);
+        } else { //proceed
+            lastUpdateTime = currentTime;
+
+            //draw list and perform one step
+            drawList(j);
+            if (!innerLoop) { //in the outer loop
+                temp = contents[i];
+                j = i - 1;
+                innerLoop = true;
+            } else { //in the outer loop
+                if (j >=0 && contents[j] > temp) { //j still decrementing
+                    contents[j+1] = contents[j];
+                    j--;
+                } else { //j done decrementing, time to swap in temp
+                    contents[j+1] = temp;
+                    i++;
+                    innerLoop = false;
+                }
+            }
+        }
+        
+    
 
         //IMGUI
         // ImGui frame start
@@ -156,6 +199,8 @@ void renderer::insertionSort() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         // ImGui Buttons
+        ImGui::BeginGroup();
+        ImGui::Text("Options:");
         if (ImGui::Button(paused ? "Resume" : "Stop")) {
             paused = !paused;
         }
@@ -170,34 +215,18 @@ void renderer::insertionSort() {
             currentState = AppState::Menu;
             menu = true;
         }
+        ImGui::EndGroup();
+        ImGui::SameLine();    
+        ImGui::BeginGroup();
+        ImGui::Text("Settings");
+        ImGui::Text("Bar Color:");
+        ImGui::ColorEdit3("##color", barColor.data());
+        ImGui::Text("Delay:");
+        ImGui::SliderFloat("##delay", &delay, 0.0f, 0.5f, "%.3f seconds");
+        ImGui::EndGroup();
         // Render ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        //keeps rendering the completed or stopped list
-        if (i >= len || paused) {
-            drawList();
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-            continue;
-        }
-        
-        //draw list and perform one step
-        drawList(j);
-        if (!innerLoop) { //in the outer loop
-            temp = contents[i];
-            j = i - 1;
-            innerLoop = true;
-        } else { //in the outer loop
-            if (j >=0 && contents[j] > temp) { //j still decrementing
-                contents[j+1] = contents[j];
-                j--;
-            } else { //j done decrementing, time to swap in temp
-                contents[j+1] = temp;
-                i++;
-                innerLoop = false;
-            }
-        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -217,6 +246,8 @@ void renderer::selectionSort() {
     //variables for the visualizer
     bool paused = false;
     bool menu = false;
+    double currentTime;
+    double lastUpdateTime;
 
     while (!glfwWindowShouldClose(window)) {
         if(menu) {
@@ -224,12 +255,48 @@ void renderer::selectionSort() {
         }
         glClear(GL_COLOR_BUFFER_BIT);
 
+
+        //renders
+        currentTime = glfwGetTime();
+        if (i >= len || paused) { //paused
+            drawList();
+        } else if (currentTime - lastUpdateTime < delay) { //delayed
+            drawList(j);
+        } else { //proceed
+            lastUpdateTime = currentTime;
+            drawList(j);
+            if (!innerLoop) { //in the outer loop
+                j = i + 1;
+                innerLoop = true;
+                min_index = i;
+            } else { //in the inner loop
+                if (j < len) { //j still iterating
+                    if (contents[j] < contents[min_index]) {
+                        min_index = j;
+                    }
+                    j++;
+                } else { //j done iterating, time to swap
+                    if (min_index != i) {
+                        // swap
+                        temp = contents[i];
+                        contents[i] = contents[min_index];
+                        contents[min_index] = temp;
+                    }
+                    i++;
+                    innerLoop = false;
+
+                }
+            }
+        }
+
         //IMGUI
         // ImGui frame start
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         // ImGui Buttons
+        ImGui::BeginGroup();
+        ImGui::Text("Options:");
         if (ImGui::Button(paused ? "Resume" : "Stop")) {
             paused = !paused;
         }
@@ -237,51 +304,24 @@ void renderer::selectionSort() {
             myList.reset();
             contents = myList.contents;
             i = 0;
-            j = 1;
             innerLoop = false;
         }
         if (ImGui::Button("Menu")) {
             currentState = AppState::Menu;
             menu = true;
         }
+        ImGui::EndGroup();
+        ImGui::SameLine();    
+        ImGui::BeginGroup();
+        ImGui::Text("Settings");
+        ImGui::Text("Bar Color:");
+        ImGui::ColorEdit3("##color", barColor.data());
+        ImGui::Text("Delay:");
+        ImGui::SliderFloat("##delay", &delay, 0.0f, 0.5f, "%.3f seconds");
+        ImGui::EndGroup();
         // Render ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
-
-        //keeps rendering the completed or stopped list
-        if (i >= len || paused) {
-            drawList();
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-            continue;
-        }
-
-        //draws list and iterates once
-        drawList(j);
-        if (!innerLoop) { //in the outer loop
-            j = i + 1;
-            innerLoop = true;
-            min_index = i;
-        } else { //in the inner loop
-            if (j < len) { //j still iterating
-                if (contents[j] < contents[min_index]) {
-                    min_index = j;
-                }
-                j++;
-            } else { //j done iterating, time to swap
-                if (min_index != i) {
-                    // swap
-                    temp = contents[i];
-                    contents[i] = contents[min_index];
-                    contents[min_index] = temp;
-                }
-                i++;
-                innerLoop = false;
-
-            }
-        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -301,6 +341,8 @@ void renderer::bubbleSort() {
     //variables for the visualizer
     bool paused = false;
     bool menu = false;
+    double currentTime;
+    double lastUpdateTime;
 
     while (!glfwWindowShouldClose(window)) {
         if (menu) {
@@ -308,12 +350,48 @@ void renderer::bubbleSort() {
         }
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //renders
+        currentTime = glfwGetTime();
+        if (i >= len || paused) { //paused or completed
+            drawList();
+        } else if (currentTime - lastUpdateTime < delay){
+            drawList(j);
+        } else {
+            lastUpdateTime = currentTime;
+            //draws list and iterates once
+            drawList(j);
+            if (!innerLoop) { //in the outer loop
+                j = 0;
+                innerLoop = true;
+                swapped = false;
+            } else { //in the inner loop
+                if (j < len - i - 1) { //j still iterating
+                    if (contents[j] > contents[j+1]) {
+                        int temp = contents[j];
+                        contents[j] = contents[j+1];
+                        contents[j+1] = temp;
+                        swapped = true;
+                    }
+                    j++;
+                } else { //j done iterating, increase i and check swapped
+                    i++;
+                    innerLoop = false;
+                    if (swapped == false) {
+                        i = len;
+                    }
+
+                }
+            }
+        }
+        
         //IMGUI
         // ImGui frame start
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         // ImGui Buttons
+        ImGui::BeginGroup();
+        ImGui::Text("Options:");
         if (ImGui::Button(paused ? "Resume" : "Stop")) {
             paused = !paused;
         }
@@ -322,51 +400,25 @@ void renderer::bubbleSort() {
             contents = myList.contents;
             i = 0;
             j = -1;
-            innerLoop = false;
             swapped = false;
+            innerLoop = false;
         }
         if (ImGui::Button("Menu")) {
             currentState = AppState::Menu;
             menu = true;
         }
+        ImGui::EndGroup();
+        ImGui::SameLine();    
+        ImGui::BeginGroup();
+        ImGui::Text("Settings");
+        ImGui::Text("Bar Color:");
+        ImGui::ColorEdit3("##color", barColor.data());
+        ImGui::Text("Delay:");
+        ImGui::SliderFloat("##delay", &delay, 0.0f, 0.5f, "%.3f seconds");
+        ImGui::EndGroup();
         // Render ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
-
-        //keeps rendering the completed or stopped list
-        if (i >= len || paused) {
-            drawList();
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-            continue;
-        }
-
-        //draws list and iterates once
-        drawList(j);
-        if (!innerLoop) { //in the outer loop
-            j = 0;
-            innerLoop = true;
-            swapped = false;
-        } else { //in the inner loop
-            if (j < len - i - 1) { //j still iterating
-                if (contents[j] > contents[j+1]) {
-                    int temp = contents[j];
-                    contents[j] = contents[j+1];
-                    contents[j+1] = temp;
-                    swapped = true;
-                }
-                j++;
-            } else { //j done iterating, increase i and check swapped
-                i++;
-                innerLoop = false;
-                if (swapped == false) {
-                    i = len;
-                }
-
-            }
-        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
