@@ -7,10 +7,13 @@ renderer::renderer() {
 
     currentState = AppState::Menu;
     myList = list();
-    
+    myDatabase = database();
+    myDatabase.init();
+    myDatabase.readUserPreferences(1, delay, barColor);
+
     numElements = myList.len;
-    barColor = defaultColor;
-    delay = 0.0;
+    //barColor = defaultColor;
+    //delay = 0.0;
     
     
     initialize();
@@ -54,6 +57,7 @@ void renderer::initialize(){
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     io = &ImGui::GetIO(); (void)io;
+    io->IniFilename = "bin/imgui.ini";
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 120");
@@ -61,9 +65,6 @@ void renderer::initialize(){
 
 
 //Utility functions for rendering
-void renderer::imgui() {
-    
-}
 void renderer::menu() {
     //Function to switch app state for proper rendering
 
@@ -101,9 +102,10 @@ void renderer::menu() {
     ImGui::ColorEdit3("##color", barColor.data());
     ImGui::Text("Delay:");
     ImGui::SliderFloat("##delay", &delay, 0.0f, 0.5f, "%.3f seconds");
-    if (ImGui::Button("Save")) {
+    if (ImGui::Button("Save Preferences")) {
         myList.len = numElements;
         myList.reset();
+        myDatabase.writeUserPreferences(1, delay, barColor);
     }
 
     ImGui::EndGroup();

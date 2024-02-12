@@ -1,29 +1,28 @@
 # Compiler
 CXX = g++
-
+CC = gcc
 CXXFLAGS = -std=c++11 -g
+CFLAGS = -g
 
-# Directory for dependencies
+# Structure
 DEPENDENCIES_DIR = dependencies
-# Directory for executables and object files
 BIN_DIR = bin
 OBJ_DIR = $(BIN_DIR)/obj_dir
 
-# Include directories for header files
-INCLUDES = -Idependencies/imgui -I/opt/local/include
-
-# Library directories for libraries
+# Libraries and such
+INCLUDES = -I$(DEPENDENCIES_DIR)/imgui -I$(DEPENDENCIES_DIR)/sqlite -I/opt/local/include
 LDFLAGS = -L/opt/local/lib
-
-# Libraries to link
 LDLIBS = -lglfw -lglew -framework OpenGL
 
 # Source files
-IMGUI_SRCS = $(wildcard dependencies/imgui/*.cpp) $(wildcard dependencies/imgui/backends/*.cpp)
-SRCS = $(wildcard src/*.cc) $(IMGUI_SRCS)
+SQLITE_SRCS = $(wildcard $(DEPENDENCIES_DIR)/sqlite/*.c)
+IMGUI_SRCS = $(wildcard $(DEPENDENCIES_DIR)/imgui/*.cpp) $(wildcard $(DEPENDENCIES_DIR)/imgui/backends/*.cpp)
+CXX_SRCS = $(wildcard src/*.cc) $(IMGUI_SRCS) 
+C_SRCS = $(SQLITE_SRCS)
 
 # Object files (placed in OBJ_DIR)
-OBJS = $(patsubst src/%.cc,$(OBJ_DIR)/%.o,$(SRCS))
+CXX_OBJS = $(patsubst src/%.cc,$(OBJ_DIR)/%.o,$(CXX_SRCS))
+C_OBJS = $(patsubst $(DEPENDENCIES_DIR)/sqlite/%.c,$(OBJ_DIR)/%.o,$(C_SRCS))
 
 # Executable name
 EXE = visualizer
@@ -31,13 +30,17 @@ EXE = visualizer
 # Default target
 all: $(EXE)
 
-$(EXE): $(OBJS)
+$(EXE): $(CXX_OBJS) $(C_OBJS) $(IMGUI_SRCS)
 	mkdir -p $(BIN_DIR)
 	$(CXX) $(INCLUDES) $(CXXFLAGS) $(LDFLAGS) -o $(BIN_DIR)/$@ $^ $(LDLIBS)
 
 $(OBJ_DIR)/%.o: src/%.cc
 	mkdir -p $(OBJ_DIR)
 	$(CXX) $(INCLUDES) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(DEPENDENCIES_DIR)/sqlite/%.c
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile and run the program
 run: $(EXE)

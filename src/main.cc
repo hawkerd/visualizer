@@ -1,4 +1,3 @@
-#include "list.h"
 #include "renderer.h"
 
 int main() {

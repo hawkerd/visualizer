@@ -6,6 +6,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "list.h"
+#include "database.h"
 
 #ifndef RENDERER_H
 #define RENDERER_H
@@ -41,12 +42,12 @@ class renderer {
         void selectionSort();
         void bubbleSort();
         void mergeSort();
-        void imgui();
         void drawBar(float x, float y, float width, float height, const std::vector<float>& color);
         void drawList(int elementBeingSorted);
 
         //VARIABLES
         list myList;
+        database myDatabase;
         GLFWwindow* window;
         const static std::vector<float> defaultColor;
         ImGuiIO* io;
